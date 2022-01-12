@@ -99,10 +99,13 @@ h2 {
 p {
   margin-left: 2%;
 }
-.nav-div{
+.nav-div {
   justify-content: space-around;
   display: flex;
   padding: 2px;
   margin: 2px;
   margin-left: 70%;
+}
+td {
+  text-align: center;
 }

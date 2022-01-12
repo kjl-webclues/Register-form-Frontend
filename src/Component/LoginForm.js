@@ -1,14 +1,15 @@
-import React, { useContext } from "react"
-import { useFormik } from "formik"
-import axios from "axios"
-import { useHistory } from "react-router-dom"
-import { UserContext } from "../App"
-
+import React from "react";
+import { useFormik } from "formik";
+import { useDispatch } from 'react-redux';
+import {login_User} from '../Actions/userAction'
+import { useHistory } from "react-router-dom";
 
 
 const LoginForm = () => {
-    const { dispatch } = useContext(UserContext)
-    const history = useHistory();
+    
+    const Apidispatch = useDispatch();
+
+    const history = useHistory()
 
     const formik = useFormik({
         initialValues: {
@@ -17,18 +18,9 @@ const LoginForm = () => {
         },
         onSubmit: (values) => {
             console.log("values", values);
-            // for employee login
-            axios.post(`/signIn`, values)
-                .then(() => {
-                    dispatch({ type:'user', payload:true })
-                    alert('Login Successfull')
-                    formik.handleReset();
-                    history.push('/dashbord')
-                })
-                .catch((err) => {
-                    window.alert("Invalid Credientials!")
-                    console.log(err);
-                })            
+            // for employee login             
+            Apidispatch(login_User(values))
+            history.push('/dashbord')           
         }
     })
  

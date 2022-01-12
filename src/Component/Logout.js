@@ -1,25 +1,19 @@
-import axios from 'axios'
-import React, { useContext } from 'react'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { useEffect } from 'react'
+import { useDispatch } from 'react-redux';
+import {logout_User} from '../Actions/userAction'
 
-import { UserContext } from '../App'
+
 
 const Logout = () => {
     const history = useHistory()
     
-    const { dispatch } = useContext(UserContext);
+    const Apidispatch = useDispatch();
 
     useEffect(() => {
-        axios.get(`/logout`)
-            .then(() => {
-                dispatch({type: 'user', payload:false})
-                history.push('/loginpage')                
-            })
-            .catch((err) => {
-                history.push('/loginpage')
-                console.log(err);
-            })
+        Apidispatch(logout_User());
+        history.push('loginpage')
     }, [])
  
     return (

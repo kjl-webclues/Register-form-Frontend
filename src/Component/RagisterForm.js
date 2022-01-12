@@ -1,17 +1,30 @@
-import { useFormik} from 'formik'
-import { NavLink, useHistory } from 'react-router-dom'
-import {useEffect} from 'react'
-import queryString from 'query-string'
-import axios from 'axios'
-import {useState} from 'react'
-
+import React from 'react';
+import { useFormik } from 'formik';
+import { NavLink, useHistory } from 'react-router-dom';
+import { useEffect } from 'react';
+import queryString from 'query-string';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { register_user, edit_User, update_User, } from '../Actions/userAction';
 
 
 const RegForm = () => {
+    //Get Edited User Id
     const { id } = queryString.parse(window.location.search);
     console.log("id", id);
+
+    //For Navigate Page
     const history = useHistory();
+
+    //For store the Edited User Data
     const [employee, setEmployee] = useState([])
+
+    //Dispatch the Api Request
+    const Apidispatch = useDispatch();
+
+    //Get responce of the Api Request
+    const userData = useSelector(state => state.userData)
+    
 
     const formik = useFormik({
         initialValues: {
@@ -23,42 +36,31 @@ const RegForm = () => {
             password: "",
             confirmpassword: "",
         },
-        onSubmit: (values) => { console.log('post method', values);
+
+        onSubmit: (values) => {
             if (id) {
-                axios.put(`/editUser/${id}`, values)
-                    .then(() => {
-                        history.push('/dashbord')
-                })
-                    .catch(err => {
-                    console.log(err)
-                    })
+                Apidispatch(update_User(id, values))
+                console.log(" update value");
+                history.push('/dashbord')
+
                 // for add new User
             } else {
-                axios.post('/signUp', values)
-                    .then((res) => {
-                        alert("Registration Successful");
-                        history.push('/loginpage')
-                        formik.handleReset()
-                    })
-                    .catch(err => {
-                        alert("Invalid Registration")
-                        console.log(err);
-                })
+                Apidispatch(register_user(values))
+                console.log(register_user(values));
+                history.push('/loginpage')
+                formik.handleReset()
             }            
-        }        
+        }         
     });
-    //get selectedEdit object
+    
+    // get selectedEdit object
     useEffect(() => {
         if (id) {
-            axios.get(`/editUser/${id}`)
-            .then((res) => {
-                setEmployee(res.data)
-            })
-            .catch(error => {
-            console.log(error)
-        })
-        }            
-    }, [id])
+            Apidispatch(edit_User(id))
+            setEmployee(userData)
+        }
+    }, [])
+    
 
     //set update values
     useEffect(() => {

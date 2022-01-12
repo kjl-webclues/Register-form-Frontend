@@ -1,16 +1,19 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom';
-import { UserContext } from '../App';
+import { useSelector } from "react-redux"
+
 
 const Navbar = () => {  
-    const { state} = useContext(UserContext);
+    
+  const userState = useSelector(state => state.userState)
 
-    const RenderMenu = () => {
-        if (state) {
+    const RenderMenu = () => { 
+
+        if (userState) {
             return (
                 <>
-                    <NavLink to='/'><button>Sign Up</button></NavLink>
-                    {/* <NavLink to='/loginpage'><button>Sign In</button></NavLink> */}
+                    <NavLink to='/'><button>Home</button></NavLink>
+                    <NavLink to='/registerpage'><button>Sign Up</button></NavLink>                
                     <NavLink to='/dashbord'><button>Dashbord</button></NavLink>
                     <NavLink to='/Logout'><button>Logout</button></NavLink>
                 </>
@@ -18,10 +21,10 @@ const Navbar = () => {
         } else {
             return (
                 <>
-                    <NavLink to='/'><button>Sign Up</button></NavLink>
+                    <NavLink to='/'><button>Home</button></NavLink>                    
+                    <NavLink to='/registerpage'><button>Sign Up</button></NavLink>
                     <NavLink to='/loginpage'><button>Sign In</button></NavLink>
-                    <NavLink to='/dashbord'><button>Dashbord</button></NavLink>
-                    {/* <NavLink to='/Logout'><button>Logout</button></NavLink> */}
+                    <NavLink to='/dashbord'><button>Dashbord</button></NavLink>                    
                 </>
             )
         }
@@ -29,8 +32,7 @@ const Navbar = () => {
 
     return (
         <>
-            <div className='nav-div'>                
-                {/* {isAuth ? (<button onClick={logout}>Logout</button>):(<button onClick={login}>Login</button>)} */}
+            <div className='nav-div'>                                
                 <RenderMenu />
             </div>
         </>

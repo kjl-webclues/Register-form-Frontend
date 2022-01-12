@@ -1,49 +1,32 @@
-import axios from 'axios'
-import React, {useState, useEffect} from 'react'
+import React, { useEffect} from 'react'
 import { NavLink, useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import {get_User, delete_User} from '../Actions/userAction'
+
 
 const Dashbord = () => {
 
-    const [employee, setEmployee] = useState([])
+    const Apidispatch = useDispatch();
 
-    // const { _id, name, phone, profession, salary, email, password, confirmpassword } = employee;
+    const userData = useSelector(state => state.userData)
+    console.log(userData);
+
 
     const history = useHistory() 
     
     //For get User after Login for particular token
     useEffect(() => {
-        axios.get(`/dashbord`)
-            .then((res) => {
-                setEmployee(res.data)
-            })
-            .catch((err) => {
-                console.log(err)
-                history.push('loginpage')
-        })
+        console.log("getdata");
+        Apidispatch(get_User())    
     }, [])
-
-    //without sign in do not go to dashbord page
-    // useEffect(() => {
-    //     axios.get('/dashbord')
-    //         .then((res) => {
-    //             setEmployee(res.data)
-    //         })
-    //         .catch(() => {
-    //             history.push('/LoginForm')               
-    //     })
-    // }, [])
     
-    const deleteUser = (id) => {
-        axios.delete(`/deleteUser/${id}`)
-            .then((res) => {
-                console.log('res', res)
-                window.location.reload()
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }
-
+    //For Delete User
+    const deleteUser = (id) => {        
+        Apidispatch(delete_User(id))
+        window.location.reload();
+        history.push('/registerpage')
+        }
+        
     return (        
         <>  
             <div className='container'>
@@ -54,7 +37,7 @@ const Dashbord = () => {
                     </div>                    
             </div>                                           
 
-             <div className='col-md-6 mx-auto'>
+             <div className='col-md-12  mx-auto'>
                         <table className='table table-hover'>
                                 <thead className='text-black text-center'>
                                     <tr>                                        
@@ -69,23 +52,22 @@ const Dashbord = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                        
-                                            
-                                                
-                                                        <tr>
-                                                            <td>{employee.name}</td>
-                                                            <td>{employee.phone}</td>
-                                                            <td>{employee.profession}</td>
-                                                            <td>{employee.salary}</td>
-                                                            <td>{employee.email}</td>
-                                                            <td>{employee.password}</td>
-                                                            <td>{employee.confirmpassword}</td>
-                                                            <td><NavLink to={`/?id=${employee._id}`}><button className='editbtn'>Edit</button></NavLink></td>
-                                                            <td><button className='deletebtn' onClick={() => deleteUser(employee._id)} >Delete</button></td>                                                        
-                                                        </tr>    
-                                                    
-                                            
-                                         
+                                    {userData.map((elem) => {
+                                        return (
+                                            <tr key={elem._id}>                                        
+                                                <td>{elem.name}</td>
+                                                <td>{elem.phone}</td>
+                                                <td>{elem.profession}</td>
+                                                <td>{elem.salary}</td>
+                                                <td>{elem.email}</td>
+                                                <td>{elem.password}</td>
+                                                <td>{elem.confirmpassword}</td>
+                                                <td><NavLink to={`/editUser/:?id=${elem._id}`}><button className='editbtn'>Edit</button></NavLink> &nbsp;
+                                                <button className='deletebtn' onClick={() => deleteUser(elem._id)} >Delete</button></td>                                                        
+                                            </tr> 
+                                        )
+                                    })}
+                                                                                                                                                                                            
                                 </tbody>
                         </table>
                 </div>
